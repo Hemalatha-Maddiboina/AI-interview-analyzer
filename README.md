@@ -1,54 +1,73 @@
- AI-interview-analyzer
-AI Interview Analyzer is a web-based application that uses Artificial Intelligence (AI) to evaluate how a person performs in a mock interview. It helps users practice interviews, analyze their communication style, and improve their confidence before real interviews.
-# 🤖 AI Interview Analyzer
+# Welcome to your Lovable project
 
-AI Interview Analyzer is a **React.js web application** that allows users to record mock interviews, upload their videos for AI analysis, and receive detailed feedback on their communication skills, confidence, and clarity.  
+## Project info
 
-The goal of this project is to transform static UI pages into a fully functional interview-analysis platform.
+**URL**: https://lovable.dev/projects/7d461049-10ea-49bf-89e3-6ba10f13a0cc
 
----
+## How can I edit this code?
 
-## 🌟 Core Features
+There are several ways of editing your application.
 
-1. **User Authentication**
-   - Signup and Login connected to a real backend.
-   - Secure API integration for user sessions.
+**Use Lovable**
 
-2. **Video Recording**
-   - Record directly using the webcam.
-   - Start, stop, preview, and upload interview videos.
+Simply visit the [Lovable Project](https://lovable.dev/projects/7d461049-10ea-49bf-89e3-6ba10f13a0cc) and start prompting.
 
-3. **AI Analysis**
-   - Get feedback on:
-     - Confidence Score  
-     - Communication Clarity  
-     - Expression & Body Language  
-     - Improvement Suggestions
+Changes made via Lovable will be committed automatically to this repo.
 
-4. **Results Dashboard**
-   - Beautiful, easy-to-understand visualization of AI analysis results.
+**Use your preferred IDE**
 
-5. **Responsive UI**
-   - Optimized for both desktop and mobile devices.
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-6. **Error Handling & Animations**
-   - Smooth loading transitions and proper error messages.
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
----
+Follow these steps:
 
-## 🛠️ Tech Stack
+```sh
+# Step 1: Clone the repository using the project's Git URL.
+git clone <YOUR_GIT_URL>
 
-**Frontend:**
-- React.js  
-- React Router DOM  
-- Axios  
-- React Webcam  
-- Tailwind CSS / Material UI  
+# Step 2: Navigate to the project directory.
+cd <YOUR_PROJECT_NAME>
 
-**Backend (example stack):**
-- Node.js + Express.js  
-- MongoDB or PostgreSQL  
-- Cloud Storage (AWS S3 / Firebase)  
-- AI Processing API (custom or third-party model)
+# Step 3: Install the necessary dependencies.
+npm i
 
+# Step 4: Start the development server with auto-reloading and an instant preview.
+npm run dev
+```
 
+**Edit a file directly in GitHub**
+
+- Navigate to the desired file(s).
+- Click the "Edit" button (pencil icon) at the top right of the file view.
+- Make your changes and commit the changes.
+
+**Use GitHub Codespaces**
+
+- Navigate to the main page of your repository.
+- Click on the "Code" button (green button) near the top right.
+- Select the "Codespaces" tab.
+- Click on "New codespace" to launch a new Codespace environment.
+- Edit files directly within the Codespace and commit and push your changes once you're done.
+
+## What technologies are used for this project?
+
+This project is built with:
+
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
+
+## How can I deploy this project?
+
+Simply open [Lovable](https://lovable.dev/projects/7d461049-10ea-49bf-89e3-6ba10f13a0cc) and click on Share -> Publish.
+
+## Can I connect a custom domain to my Lovable project?
+
+Yes, you can!
+
+To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+
+Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
