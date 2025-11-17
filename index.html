@@ -1,24 +1,135 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Interview Practice Platform - Master Your Interview Skills</title>
-    <meta name="description" content="Practice interview skills or find the perfect candidate with our professional interview platform for students and companies." />
-    <meta name="author" content="Interview Practice Platform" />
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Interview Analyzer - Result Page</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f3f5ff;
+        margin: 0;
+        padding: 0;
+    }
 
-    <meta property="og:title" content="Interview Practice Platform" />
-    <meta property="og:description" content="Practice interview skills or find the perfect candidate with our professional interview platform." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    .container {
+        max-width: 900px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+    h1 {
+        text-align: center;
+        color: #2b4eff;
+        margin-bottom: 10px;
+    }
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    .summary-box {
+        background: #eef1ff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    .score {
+        font-size: 38px;
+        text-align: center;
+        font-weight: bold;
+        color: #2b4eff;
+    }
+
+    .section {
+        margin-top: 20px;
+    }
+
+    .section h3 {
+        color: #333;
+        border-left: 4px solid #2b4eff;
+        padding-left: 10px;
+    }
+
+    .feedback-box {
+        background: #fafaff;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #dfe3ff;
+        margin-top: 10px;
+    }
+
+    .improve {
+        color: #ff4d4d;
+        font-weight: bold;
+    }
+
+    .strength {
+        color: #16a34a;
+        font-weight: bold;
+    }
+
+    button {
+        display: block;
+        margin: 25px auto;
+        padding: 12px 25px;
+        background: #2b4eff;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background: #1e37b8;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>AI Interview Analyzer - Result</h1>
+
+    <div class="summary-box">
+        <p class="score">Overall Score: <span id="score">87%</span></p>
+        <p style="text-align:center; color:#555">Great job! Here's your interview analysis:</p>
+    </div>
+
+    <div class="section">
+        <h3>Communication Skills</h3>
+        <div class="feedback-box">
+            <p><span class="strength">✓ Strength:</span> Clear voice, well-structured answers.</p>
+            <p><span class="improve">✗ Improve:</span> Slight pauses during technical questions.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Confidence Level</h3>
+        <div class="feedback-box">
+            <p><span class="strength">✓ Strength:</span> Maintained eye contact and steady tone.</p>
+            <p><span class="improve">✗ Improve:</span> Try to reduce filler words like "um" and "uh".</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Body Language Analysis</h3>
+        <div class="feedback-box">
+            <p><span class="strength">✓ Strength:</span> Positive posture, minimal nervous movements.</p>
+            <p><span class="improve">✗ Improve:</span> Smile a bit more to show enthusiasm.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Technical Response Quality</h3>
+        <div class="feedback-box">
+            <p><span class="strength">✓ Strength:</span> Good explanation of core concepts.</p>
+            <p><span class="improve">✗ Improve:</span> Add more examples and real-life scenarios.</p>
+        </div>
+    </div>
+
+    <button onclick="window.print()">Download / Print Result</button>
+</div>
+
+</body>
 </html>
