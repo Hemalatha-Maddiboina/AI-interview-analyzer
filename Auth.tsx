@@ -1,191 +1,201 @@
-import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft } from "lucide-react";
+import { Brain, Sparkles } from "lucide-react";
+import { z } from "zod";
+
+const authSchema = z.object({
+  email: z.string().trim().email({ message: "Please enter a valid email address" }).max(255),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }).max(100),
+});
 
 const Auth = () => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const userType = searchParams.get("type") || "student";
   const { toast } = useToast();
 
-  const [loginData, setLoginData] = useState({ email: "", password: "" });
-  const [signupData, setSignupData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    userType: userType,
-  });
+  useEffect(() => {
+    // Check if user is already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate("/");
+      }
+    });
+  }, [navigate]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!loginData.email || !loginData.password) {
+    setLoading(true);
+
+    // Validate input
+    const validation = authSchema.safeParse({ email, password });
+    if (!validation.success) {
       toast({
-        title: "Error",
-        description: "Please fill in all fields",
+        title: "Invalid input",
+        description: validation.error.errors[0].message,
         variant: "destructive",
       });
+      setLoading(false);
       return;
     }
 
-    toast({
-      title: "Login successful!",
-      description: "Redirecting to your dashboard...",
-    });
+    try {
+      if (isLogin) {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: validation.data.email,
+          password: validation.data.password,
+        });
 
-    setTimeout(() => {
-      navigate(userType === "student" ? "/student-dashboard" : "/company-dashboard");
-    }, 1000);
-  };
+        if (error) {
+          if (error.message.includes("Invalid login credentials")) {
+            toast({
+              title: "Login failed",
+              description: "Invalid email or password. Please try again.",
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "Error",
+              description: error.message,
+              variant: "destructive",
+            });
+          }
+          return;
+        }
 
-  const handleSignup = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!signupData.name || !signupData.email || !signupData.password) {
+        toast({
+          title: "Welcome back!",
+          description: "You've successfully logged in.",
+        });
+        navigate("/");
+      } else {
+        const redirectUrl = `${window.location.origin}/`;
+        const { error } = await supabase.auth.signUp({
+          email: validation.data.email,
+          password: validation.data.password,
+          options: {
+            emailRedirectTo: redirectUrl,
+          },
+        });
+
+        if (error) {
+          if (error.message.includes("already registered")) {
+            toast({
+              title: "Account exists",
+              description: "This email is already registered. Please login instead.",
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "Error",
+              description: error.message,
+              variant: "destructive",
+            });
+          }
+          return;
+        }
+
+        toast({
+          title: "Account created!",
+          description: "You can now log in with your credentials.",
+        });
+        setIsLogin(true);
+      }
+    } catch (error) {
       toast({
         title: "Error",
-        description: "Please fill in all fields",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    toast({
-      title: "Account created!",
-      description: "Redirecting to your dashboard...",
-    });
-
-    setTimeout(() => {
-      navigate(signupData.userType === "student" ? "/student-dashboard" : "/company-dashboard");
-    }, 1000);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted p-4">
       <div className="w-full max-w-md">
-        <Button
-          variant="ghost"
-          className="mb-4"
-          onClick={() => navigate("/")}
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Home
-        </Button>
-
-        <Card className="p-8">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
-            <p className="text-muted-foreground">
-              Sign in or create an account to continue
-            </p>
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-primary rounded-2xl mb-4 shadow-glow">
+            <Brain className="w-8 h-8 text-primary-foreground" />
           </div>
+          <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent flex items-center justify-center gap-2">
+            AI Interview Analyzer
+            <Sparkles className="w-6 h-6 text-secondary" />
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Intelligent insights for better hiring decisions
+          </p>
+        </div>
 
-          <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
+        <Card className="border-border/50 shadow-xl">
+          <CardHeader>
+            <CardTitle>{isLogin ? "Welcome back" : "Create account"}</CardTitle>
+            <CardDescription>
+              {isLogin
+                ? "Enter your credentials to access your dashboard"
+                : "Sign up to start analyzing interviews"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleAuth} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="transition-all"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="transition-all"
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full bg-gradient-primary hover:opacity-90 transition-opacity shadow-glow"
+                disabled={loading}
+              >
+                {loading ? "Loading..." : isLogin ? "Sign in" : "Sign up"}
+              </Button>
+            </form>
 
-            <TabsContent value="login">
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
-                  <Input
-                    id="login-email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={loginData.email}
-                    onChange={(e) =>
-                      setLoginData({ ...loginData, email: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={loginData.password}
-                    onChange={(e) =>
-                      setLoginData({ ...loginData, password: e.target.value })
-                    }
-                  />
-                </div>
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="signup">
-              <form onSubmit={handleSignup} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-name">Name</Label>
-                  <Input
-                    id="signup-name"
-                    type="text"
-                    placeholder="John Doe"
-                    value={signupData.name}
-                    onChange={(e) =>
-                      setSignupData({ ...signupData, name: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
-                  <Input
-                    id="signup-email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={signupData.email}
-                    onChange={(e) =>
-                      setSignupData({ ...signupData, email: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
-                  <Input
-                    id="signup-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={signupData.password}
-                    onChange={(e) =>
-                      setSignupData({ ...signupData, password: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="user-type">I am a</Label>
-                  <Select
-                    value={signupData.userType}
-                    onValueChange={(value) =>
-                      setSignupData({ ...signupData, userType: value })
-                    }
-                  >
-                    <SelectTrigger id="user-type">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="student">Student</SelectItem>
-                      <SelectItem value="company">Company</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button type="submit" className="w-full">
-                  Create Account
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
+            <div className="mt-6 text-center">
+              <button
+                type="button"
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                disabled={loading}
+              >
+                {isLogin ? "Don't have an account? " : "Already have an account? "}
+                <span className="text-primary font-medium">
+                  {isLogin ? "Sign up" : "Sign in"}
+                </span>
+              </button>
+            </div>
+          </CardContent>
         </Card>
       </div>
     </div>
